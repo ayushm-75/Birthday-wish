@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy 17th Birthday</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --highlight: #ff9ecd;
+            --gold: #ffd700;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+        }
+
+        /* --- Text Section --- */
+        .text-container {
+            z-index: 10;
+            width: 100%;
+            margin-top: 5vh;
+            padding-left: 10px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        h1 span { color: var(--highlight); }
+
+        .wishes-text {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #ddd;
+            max-width: 90%;
+        }
+
+        .highlight-text { color: var(--highlight); font-weight: bold; }
+        .heart { color: #e23b3b; display: inline-block; animation: beat 1s infinite; }
+
+        .btn-container { margin-top: 30px; }
+        .download-btn {
+            background: white; color: black; border: none; padding: 12px 25px;
+            border-radius: 30px; font-weight: bold; font-size: 1rem;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); cursor: pointer;
+        }
+        .signature { margin-top: 20px; font-size: 0.9rem; color: #aaa; font-style: italic; }
+
+        /* --- Butterfly (Realistic) --- */
+        .butterfly-wrapper {
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 40px;
+            height: 40px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .butterfly-svg {
+            width: 100%; 
+            height: 100%;
+            overflow: visible;
+        }
+
+        .wing-group {
+            transform-origin: center;
+            animation: flutter 0.2s infinite alternate ease-in-out;
+        }
+
+        .wing { fill: url(#wingGradient); stroke: black; stroke-width: 0.5px; }
+
+        /* --- Cake Section --- */
+        .cake-wrapper {
+            position: relative;
+            width: 300px; 
+            height: 320px;
+            margin-bottom: 60px;
+            z-index: 5;
+            transform: scale(0.95);
+        }
+
+        .plate {
+            position: absolute; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 260px; 
+            height: 12px; 
+            background: linear-gradient(to bottom, #e8e8e8, #c0c0c0);
+            border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* 3D Cake CSS - More Realistic */
+        .layer {
+            position: absolute; 
+            left: 50%; 
+            transform: translateX(-50%);
+            border-radius: 10px;
+        }
+        
+        /* Cake Layer with 3D Effect */
+        .cake-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #a0522d 0%, #8b4513 50%, #654321 100%);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 
+                inset -3px -3px 8px rgba(0,0,0,0.4),
+                inset 3px 3px 8px rgba(139, 90, 43, 0.3);
+        }
+        
+        .frosting {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 18px;
+            background: linear-gradient(180deg, #ffb3d9 0%, var(--highlight) 100%);
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Frosting drips */
+        .frosting::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 15%;
+            width: 12px;
+            height: 10px;
+            background: var(--highlight);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .frosting::before {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: 20%;
+            width: 10px;
+            height: 8px;
+            background: var(--highlight);
+            border-radius: 0 0 50% 50%;
+        }
+
+        /* Layer Sizes */
+        .l-bottom { 
+            width: 220px; 
+            height: 80px; 
+            bottom: 12px; 
+            z-index: 1; 
+        }
+        
+        .l-middle { 
+            width: 160px; 
+            height: 70px; 
+            bottom: 92px; 
+            z-index: 2; 
+        }
+        
+        .l-top { 
+            width: 110px; 
+            height: 60px; 
+            bottom: 162px; 
+            z-index: 3; 
+        }
+
+        /* Add some decorative elements on layers */
+        .decoration {
+            position: absolute;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(255,255,255,0.5);
+        }
+
+        .dec1 { left: 20%; transform: translateY(-50%); }
+        .dec2 { left: 50%; transform: translateY(-50%); }
+        .dec3 { left: 80%; transform: translateY(-50%); }
+
+        /* Candle */
+        .candle {
+            position: absolute; 
+            width: 12px; 
+            height: 45px;
+            background: linear-gradient(90deg, #ffe0e0 0%, #ffb3b3 50%, #ffe0e0 100%);
+            bottom: 222px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 4;
+            border-radius: 2px;
+            box-shadow: 
+                inset -1px 0 2px rgba(0,0,0,0.2),
+                2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Wick */
+        .candle::before {
+            content:''; 
+            position: absolute; 
+            top: -6px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 2px; 
+            height: 6px; 
+            background: #333;
+        }
+
+        .flame {
+            position: absolute; 
+            width: 18px; 
+            height: 35px;
+            background: radial-gradient(ellipse at bottom, #fff 10%, #ffdd00 30%, #ff9900 60%, transparent 80%);
+            bottom: 265px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            border-radius: 50% 50% 20% 20%; 
+            z-index: 5;
+            animation: flicker 0.1s infinite alternate; 
+            cursor: pointer;
+            filter: drop-shadow(0 0 8px #ff9900);
+        }
+        
+        .flame::after { 
+            content:''; 
+            position: absolute; 
+            top:-20px; 
+            bottom:-20px; 
+            left:-20px; 
+            right:-20px; 
+        }
+
+        .smoke {
+            position: absolute; 
+            width: 6px; 
+            height: 10px; 
+            background: rgba(255,255,255,0.6);
+            bottom: 270px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            border-radius: 50%; 
+            filter: blur(4px); 
+            opacity: 0; 
+            z-index: 6;
+        }
+
+        .instruction {
+            position: absolute; 
+            bottom: -50px; 
+            width: 100%; 
+            text-align: center;
+            font-size: 0.9rem; 
+            color: #ffb3d9;
+            animation: pulse 2s infinite;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(255, 179, 217, 0.5);
+        }
+
+        /* --- Balloons & Confetti --- */
+        .balloon {
+            position: absolute; 
+            bottom: -150px; 
+            width: 50px; 
+            height: 65px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            z-index: 50;
+            box-shadow: 
+                inset -5px -5px 10px rgba(0,0,0,0.2), 
+                inset 5px 5px 10px rgba(255,255,255,0.4);
+        }
+        
+        .balloon::after {
+            content: ''; 
+            position: absolute; 
+            top: 100%; 
+            left: 50%; 
+            width: 1px; 
+            height: 60px;
+            background: rgba(255,255,255,0.5);
+        }
+        
+        .confetti-piece { 
+            position: absolute; 
+            width: 8px; 
+            height: 8px; 
+            top: -10px; 
+            z-index: 60; 
+        }
+
+        /* Animations */
+        @keyframes flutter { 
+            0% { transform: scaleY(1); } 
+            100% { transform: scaleY(0.2); } 
+        }
+        
+        @keyframes flicker { 
+            from { 
+                opacity: 1; 
+                transform: translateX(-50%) scale(1); 
+            } 
+            to { 
+                opacity: 0.85; 
+                transform: translateX(-50%) scale(0.95, 1.1); 
+            } 
+        }
+        
+        @keyframes pulse { 
+            0%,100%{opacity:0.6;} 
+            50%{opacity:1;} 
+        }
+        
+        @keyframes beat { 
+            0%,100%{transform:scale(1);} 
+            50%{transform:scale(1.2);} 
+        }
+        
+        @keyframes floatUp { 
+            to { transform: translateY(-120vh) rotate(20deg); } 
+        }
+        
+        @keyframes fallConfetti { 
+            to { transform: translateY(100vh) rotate(720deg); } 
+        }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bdayAudio" autoplay>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Realistic Butterfly (SVG) -->
+    <div class="butterfly-wrapper" id="butterfly">
+        <svg class="butterfly-svg" viewBox="0 0 100 100">
+            <defs>
+                <radialGradient id="wingGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:orange;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ff4500;stop-opacity:1" />
+                </radialGradient>
+            </defs>
+            <!-- Wings -->
+            <g class="wing-group" style="transform-origin: 50% 50%;">
+                <path class="wing" d="M 50 50 Q 20 10 10 40 T 50 80 Z" />
+                <path class="wing" d="M 50 50 Q 80 10 90 40 T 50 80 Z" />
+                <!-- Body -->
+                <ellipse cx="50" cy="50" rx="3" ry="25" fill="#222" />
+                <path d="M 50 25 L 40 10 M 50 25 L 60 10" stroke="#222" stroke-width="2" fill="none"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="text-container">
+        <h1>Happy <br><span>Birthday</span></h1>
+        
+        <div class="wishes-text">
+            To <span class="highlight-text">&lt;NAME HERE&gt;</span>,<br><br>
+            Happy 17th! May your day be filled with magic, laughter, and everything sweet. Here's to a future as bright as the candles on your cake.<br><br>
+            Make a wish and let it fly! <span class="heart">❤️</span>
+        </div>
+
+        <div class="btn-container">
+            <button class="download-btn" onclick="downloadCard()">Download Card</button>
+        </div>
+        
+        <div class="signature">~ By Ayush</div>
+    </div>
+
+    <div class="cake-wrapper" id="cakeArea">
+        <div class="plate"></div>
+
+        <!-- Layers with realistic styling -->
+        <div class="layer l-bottom" id="bottomLayer">
+            <div class="cake-body">
+                <div class="frosting"></div>
+                <div class="decoration dec1"></div>
+                <div class="decoration dec2"></div>
+                <div class="decoration dec3"></div>
+            </div>
+        </div>
+        
+        <div class="layer l-middle">
+            <div class="cake-body">
+                <div class="frosting"></div>
+                <div class="decoration dec1"></div>
+                <div class="decoration dec3"></div>
+            </div>
+        </div>
+        
+        <div class="layer l-top">
+            <div class="cake-body">
+                <div class="frosting"></div>
+                <div class="decoration dec2"></div>
+            </div>
+        </div>
+
+        <!-- Candle -->
+        <div class="candle"></div>
+        <div class="flame" id="flame" onclick="blowCandle()"></div>
+        <div class="smoke" id="smoke"></div>
+
+        <div class="instruction" id="instruct">✨ Tap the flame to make a wish ✨</div>
+    </div>
+
+    <script>
+        let animationEndCount = 0;
+        const totalAnimations = 110; // 30 balloons + 80 confetti = 110 total
+
+        window.onload = function() {
+            // Start audio immediately
+            const audio = document.getElementById('bdayAudio');
+            audio.play().catch(() => {
+                // If autoplay is blocked, try again on first user interaction
+                document.body.addEventListener('click', () => {
+                    audio.play().catch(()=>{});
+                }, {once: true});
+            });
+
+            startParty();
+        };
+
+        function startParty() {
+            spawnBalloons(30);
+            spawnConfetti(80);
+        }
+
+        function spawnBalloons(num) {
+            const colors = ['#ff4d4d', '#4d4dff', '#ffdf4d', '#4dff4d'];
+            for(let i=0; i<num; i++) {
+                let b = document.createElement('div');
+                b.className = 'balloon';
+                let c = colors[Math.floor(Math.random()*colors.length)];
+                b.style.backgroundColor = c;
+                b.style.left = Math.random() * 95 + '%';
+                let dur = 4 + Math.random() * 4;
+                b.style.animation = `floatUp ${dur}s linear forwards`;
+                b.addEventListener('animationend', () => { 
+                    b.remove(); 
+                    checkAllAnimationsComplete();
+                });
+                document.body.appendChild(b);
+            }
+        }
+
+        function spawnConfetti(num) {
+            const colors = ['#f0f', '#0ff', '#ff0', '#f00'];
+            for(let i=0; i<num; i++) {
+                let c = document.createElement('div');
+                c.className = 'confetti-piece';
+                c.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+                c.style.left = Math.random()*100 + 'vw';
+                let dur = 3 + Math.random()*2;
+                c.style.animation = `fallConfetti ${dur}s linear forwards`;
+                c.addEventListener('animationend', () => { 
+                    c.remove(); 
+                    checkAllAnimationsComplete();
+                });
+                document.body.appendChild(c);
+            }
+        }
+
+        function checkAllAnimationsComplete() {
+            animationEndCount++;
+            if (animationEndCount >= totalAnimations) {
+                // All balloons and confetti are done, start butterfly
+                setTimeout(flyButterfly, 500);
+            }
+        }
+
+        function flyButterfly() {
+            const butterfly = document.getElementById('butterfly');
+            const bottomLayer = document.getElementById('bottomLayer');
+            const wingGroup = document.querySelector('.wing-group');
+
+            // Get the actual position of the bottom layer
+            const rect = bottomLayer.getBoundingClientRect();
+            
+            // Target: Right edge, top of the bottom layer
+            const endX = rect.right - 30; // 30px from right edge
+            const endY = rect.top + 10; // 10px from top
+
+            // Starting position (top-left corner)
+            const startX = 50;
+            const startY = 50;
+
+            // Create a curved path using quadratic bezier
+            const midX = window.innerWidth * 0.7;
+            const midY = window.innerHeight * 0.3;
+
+            // Set butterfly to start position
+            butterfly.style.left = startX + 'px';
+            butterfly.style.top = startY + 'px';
+
+            // Animate position
+            let startTime = null;
+            const duration = 4000; // 4 seconds
+
+            function animateButterfly(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = (timestamp - startTime) / duration;
+
+                if (progress < 1) {
+                    // Quadratic bezier curve calculation
+                    const t = progress;
+                    const x = Math.pow(1-t, 2) * startX + 2 * (1-t) * t * midX + Math.pow(t, 2) * endX;
+                    const y = Math.pow(1-t, 2) * startY + 2 * (1-t) * t * midY + Math.pow(t, 2) * endY;
+
+                    butterfly.style.left = x + 'px';
+                    butterfly.style.top = y + 'px';
+
+                    // Calculate angle for smooth rotation
+                    if (progress > 0.01) {
+                        const prevT = progress - 0.01;
+                        const prevX = Math.pow(1-prevT, 2) * startX + 2 * (1-prevT) * prevT * midX + Math.pow(prevT, 2) * endX;
+                        const prevY = Math.pow(1-prevT, 2) * startY + 2 * (1-prevT) * prevT * midY + Math.pow(prevT, 2) * endY;
+                        
+                        const angle = Math.atan2(y - prevY, x - prevX) * (180 / Math.PI);
+                        butterfly.style.transform = `rotate(${angle + 90}deg)`;
+                    }
+
+                    requestAnimationFrame(animateButterfly);
+                } else {
+                    // Animation complete - butterfly lands
+                    butterfly.style.left = endX + 'px';
+                    butterfly.style.top = endY + 'px';
+                    butterfly.style.transform = 'rotate(-20deg)';
+                    
+                    // Stop flapping
+                    wingGroup.style.animation = 'none';
+                    wingGroup.style.transform = 'scaleX(0.4)';
+                    wingGroup.style.transition = 'transform 0.5s ease-out';
+                }
+            }
+
+            requestAnimationFrame(animateButterfly);
+        }
+
+        function blowCandle() {
+            const flame = document.getElementById('flame');
+            const smoke = document.getElementById('smoke');
+            const instruct = document.getElementById('instruct');
+
+            flame.style.opacity = '0';
+            flame.style.animation = 'none';
+
+            smoke.style.opacity = '1';
+            smoke.style.bottom = '300px'; 
+            smoke.style.transition = 'opacity 1s, bottom 2s';
+            
+            instruct.innerHTML = "🎉 Happy Birthday! May all your wishes come true! 🎉";
+            instruct.style.color = "#ffd700";
+            instruct.style.fontSize = "1rem";
+
+            spawnConfetti(50);
+            setTimeout(() => { smoke.style.opacity = '0'; }, 2000);
+        }
+
+        function downloadCard() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 4:3 Aspect Ratio
+            canvas.width = 800;
+            canvas.height = 600;
+
+            // 1. Background
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Text (Left Side)
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "900 60px 'Segoe UI', Arial, sans-serif";
+            ctx.fillText("HAPPY", 50, 120);
+            
+            ctx.fillStyle = "#ff9ecd";
+            ctx.fillText("BIRTHDAY", 50, 190);
+
+            ctx.fillStyle = "#cccccc";
+            ctx.font = "italic 24px Arial";
+            ctx.fillText("Wishing you love, laughter,", 50, 260);
+            ctx.fillText("and a bright future.", 50, 295);
+
+            ctx.fillStyle = "#ff9ecd";
+            ctx.font = "bold 36px Arial";
+            ctx.fillText("<NAME HERE>", 50, 360);
+
+            ctx.fillStyle = "#888888";
+            ctx.font = "italic 20px Arial";
+            ctx.fillText("~ By Ayush", 50, 550);
+
+            // 3. Draw 3D Cake (Right Side) - FIXED OUTLINE
+            const cx = 600;
+            const cy = 450;
+
+            ctx.strokeStyle = "#ffd700";
+            ctx.lineWidth = 4;
+            ctx.lineJoin = "round";
+
+            // Helper for 3D layers (only front visible)
+            function drawLayer(x, y, w, h) {
+                // FRONT FACE ONLY
+                ctx.beginPath();
+                
+                // Top ellipse
+                ctx.ellipse(x, y - h, w/2, h/3, 0, 0, Math.PI*2);
+                ctx.stroke();
+                
+                // Left side (front)
+                ctx.beginPath();
+                ctx.moveTo(x - w/2, y - h);
+                ctx.lineTo(x - w/2, y);
+                ctx.stroke();
+                
+                // Right side (front)
+                ctx.beginPath();
+                ctx.moveTo(x + w/2, y - h);
+                ctx.lineTo(x + w/2, y);
+                ctx.stroke();
+                
+                // Bottom arc (front only - from -PI to 0)
+                ctx.beginPath();
+                ctx.ellipse(x, y, w/2, h/3, 0, 0, Math.PI);
+                ctx.stroke();
+                
+                // Add sprinkles
+                ctx.fillStyle = "#fff";
+                for(let i=0; i<5; i++) {
+                    ctx.beginPath();
+                    let dx = x - w/4 + Math.random()*w/2;
+                    let dy = y - h + 10 + Math.random()*(h-20);
+                    ctx.arc(dx, dy, 2, 0, Math.PI*2);
+                    ctx.fill();
+                }
+                
+                // Frosting on top
+                ctx.strokeStyle = "#ff9ecd";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.ellipse(x, y - h, w/2, h/3, 0, 0, Math.PI*2);
+                ctx.stroke();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "#ffd700";
+            }
+
+            // Draw Layers (Bottom to Top)
+            drawLayer(cx, cy, 220, 70);
+            drawLayer(cx, cy - 70, 160, 60);
+            drawLayer(cx, cy - 130, 100, 50);
+
+            // Candle
+            ctx.strokeStyle = "#ffb3b3";
+            ctx.lineWidth = 3;
+            ctx.fillStyle = "#ffe0e0";
+            ctx.fillRect(cx - 6, cy - 180 - 40, 12, 40);
+            ctx.strokeRect(cx - 6, cy - 180 - 40, 12, 40);
+            
+            // Wick
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - 220);
+            ctx.lineTo(cx, cy - 226);
+            ctx.stroke();
+
+            // Flame
+            ctx.fillStyle = "#ffdd00";
+            ctx.beginPath();
+            ctx.ellipse(cx, cy - 235, 7, 13, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.ellipse(cx, cy - 232, 3, 6, 0, 0, Math.PI*2);
+            ctx.fill();
+
+            // 4. Draw Balloons near Cake
+            function drawBalloonCard(bx, by, color) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.ellipse(bx, by, 20, 25, 0, 0, Math.PI*2);
+                ctx.fill();
+                
+                // Highlight
+                ctx.fillStyle = "rgba(255,255,255,0.4)";
+                ctx.beginPath();
+                ctx.ellipse(bx - 5, by - 8, 6, 8, 0, 0, Math.PI*2);
+                ctx.fill();
+                
+                // String
+                ctx.strokeStyle = "#888";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(bx, by + 25);
+                ctx.quadraticCurveTo(bx - 5, by + 40, bx, by + 60);
+                ctx.stroke();
+            }
+
+            drawBalloonCard(cx - 150, cy - 50, "#ff4d4d");
+            drawBalloonCard(cx + 150, cy - 100, "#4d4dff");
+            drawBalloonCard(cx - 180, cy - 120, "#ffd700");
+
+            // 5. Trigger Download
+            const link = document.createElement('a');
+            link.download = 'Birthday_Card_Ayush.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+    </script>
+</body>
+</html>
