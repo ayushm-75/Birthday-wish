@@ -377,7 +377,7 @@
         <h1>Happy <br><span>Birthday</span></h1>
         
         <div class="wishes-text">
-            To <span class="highlight-text">&lt;NAME HERE&gt;</span>,<br><br>
+            To <span class="username"></span>,<br><br>
             Happy 17th! May your day be filled with magic, laughter, and everything sweet. Here's to a future as bright as the candles on your cake.<br><br>
             Make a wish and let it fly! <span class="heart">❤️</span>
         </div>
@@ -426,8 +426,28 @@
     </div>
 
     <script>
+
         let animationEndCount = 0;
         const totalAnimations = 110; // 30 balloons + 80 confetti = 110 total
+
+        const params = new URLSearchParams(window.location.search);
+
+        // Global variable
+        let username = params.get("name") || "Guest";
+
+        // Optional: sanitize (recommended)
+        username = username.replace(/[^a-zA-Z0-9 _-]/g, "");
+
+        // Use in HTML
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("username").textContent = username;
+
+            // Use in CSS via CSS variable
+            document.documentElement.style.setProperty(
+            "--username-length",
+            username.length
+            );
+        });
 
         window.onload = function() {
             // Start audio immediately
@@ -606,7 +626,7 @@
 
             ctx.fillStyle = "#ff9ecd";
             ctx.font = "bold 36px Arial";
-            ctx.fillText("<NAME HERE>", 50, 360);
+            ctx.fillText(username, 50, 360);
 
             ctx.fillStyle = "#888888";
             ctx.font = "italic 20px Arial";
