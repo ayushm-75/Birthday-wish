@@ -83,10 +83,22 @@
 
         .wing-group {
             transform-origin: center;
-            animation: flutter 0.2s infinite alternate ease-in-out;
         }
 
-        .wing { fill: url(#wingGradient); stroke: black; stroke-width: 0.5px; }
+        .wing { 
+            fill: url(#wingGradient); 
+            stroke: black; 
+            stroke-width: 0.5px;
+            transform-origin: 50% 50%;
+        }
+
+        .wing-left {
+            animation: flutter-left 0.2s infinite alternate ease-in-out;
+        }
+
+        .wing-right {
+            animation: flutter-right 0.2s infinite alternate ease-in-out;
+        }
 
         /* --- Cake Section --- */
         .cake-wrapper {
@@ -311,9 +323,14 @@
         }
 
         /* Animations */
-        @keyframes flutter { 
-            0% { transform: scaleY(1); } 
-            100% { transform: scaleY(0.2); } 
+        @keyframes flutter-left { 
+            0% { transform: rotateY(0deg); } 
+            100% { transform: rotateY(-60deg); } 
+        }
+        
+        @keyframes flutter-right { 
+            0% { transform: rotateY(0deg); } 
+            100% { transform: rotateY(60deg); } 
         }
         
         @keyframes flicker { 
@@ -363,9 +380,9 @@
                 </radialGradient>
             </defs>
             <!-- Wings -->
-            <g class="wing-group" style="transform-origin: 50% 50%;">
-                <path class="wing" d="M 50 50 Q 20 10 10 40 T 50 80 Z" />
-                <path class="wing" d="M 50 50 Q 80 10 90 40 T 50 80 Z" />
+            <g class="wing-group">
+                <path class="wing wing-left" d="M 50 50 Q 20 10 10 40 T 50 80 Z" style="transform-origin: 65% 50%;" />
+                <path class="wing wing-right" d="M 50 50 Q 80 10 90 40 T 50 80 Z" style="transform-origin: 35% 50%;" />
                 <!-- Body -->
                 <ellipse cx="50" cy="50" rx="3" ry="25" fill="#222" />
                 <path d="M 50 25 L 40 10 M 50 25 L 60 10" stroke="#222" stroke-width="2" fill="none"/>
@@ -429,6 +446,7 @@
 
         let animationEndCount = 0;
         const totalAnimations = 110; // 30 balloons + 80 confetti = 110 total
+        let butterflyHasFlown = false; // Track if butterfly has already flown
 
         const params = new URLSearchParams(window.location.search);
 
@@ -504,8 +522,9 @@
 
         function checkAllAnimationsComplete() {
             animationEndCount++;
-            if (animationEndCount >= totalAnimations) {
+            if (animationEndCount >= totalAnimations && !butterflyHasFlown) {
                 // All balloons and confetti are done, start butterfly
+                butterflyHasFlown = true;
                 setTimeout(flyButterfly, 500);
             }
         }
@@ -513,22 +532,26 @@
         function flyButterfly() {
             const butterfly = document.getElementById('butterfly');
             const bottomLayer = document.getElementById('bottomLayer');
-            const wingGroup = document.querySelector('.wing-group');
+            const wingLeft = document.querySelector('.wing-left');
+            const wingRight = document.querySelector('.wing-right');
 
             // Get the actual position of the bottom layer
             const rect = bottomLayer.getBoundingClientRect();
             
-            // Target: Right edge, top of the bottom layer
-            const endX = rect.right - 30; // 30px from right edge
-            const endY = rect.top + 10; // 10px from top
+            // Target: Right edge corner of the bottom layer
+            const endX = rect.right - 45; // Position at the right edge
+            const endY = rect.top - 5; // Slightly above the top edge
 
             // Starting position (top-left corner)
             const startX = 50;
             const startY = 50;
 
-            // Create a curved path using quadratic bezier
-            const midX = window.innerWidth * 0.7;
-            const midY = window.innerHeight * 0.3;
+            // Following the red heart path from the image:
+            // Start top-left, curve down-right, then up to top-right corner of cake
+            const control1X = window.innerWidth * 0.15;
+            const control1Y = window.innerHeight * 0.6;
+            const control2X = window.innerWidth * 0.4;
+            const control2Y = window.innerHeight * 0.8;
 
             // Set butterfly to start position
             butterfly.style.left = startX + 'px';
@@ -543,10 +566,16 @@
                 const progress = (timestamp - startTime) / duration;
 
                 if (progress < 1) {
-                    // Quadratic bezier curve calculation
+                    // Cubic bezier curve calculation for smoother heart-shaped path
                     const t = progress;
-                    const x = Math.pow(1-t, 2) * startX + 2 * (1-t) * t * midX + Math.pow(t, 2) * endX;
-                    const y = Math.pow(1-t, 2) * startY + 2 * (1-t) * t * midY + Math.pow(t, 2) * endY;
+                    const x = Math.pow(1-t, 3) * startX + 
+                              3 * Math.pow(1-t, 2) * t * control1X + 
+                              3 * (1-t) * Math.pow(t, 2) * control2X + 
+                              Math.pow(t, 3) * endX;
+                    const y = Math.pow(1-t, 3) * startY + 
+                              3 * Math.pow(1-t, 2) * t * control1Y + 
+                              3 * (1-t) * Math.pow(t, 2) * control2Y + 
+                              Math.pow(t, 3) * endY;
 
                     butterfly.style.left = x + 'px';
                     butterfly.style.top = y + 'px';
@@ -554,8 +583,14 @@
                     // Calculate angle for smooth rotation
                     if (progress > 0.01) {
                         const prevT = progress - 0.01;
-                        const prevX = Math.pow(1-prevT, 2) * startX + 2 * (1-prevT) * prevT * midX + Math.pow(prevT, 2) * endX;
-                        const prevY = Math.pow(1-prevT, 2) * startY + 2 * (1-prevT) * prevT * midY + Math.pow(prevT, 2) * endY;
+                        const prevX = Math.pow(1-prevT, 3) * startX + 
+                                      3 * Math.pow(1-prevT, 2) * prevT * control1X + 
+                                      3 * (1-prevT) * Math.pow(prevT, 2) * control2X + 
+                                      Math.pow(prevT, 3) * endX;
+                        const prevY = Math.pow(1-prevT, 3) * startY + 
+                                      3 * Math.pow(1-prevT, 2) * prevT * control1Y + 
+                                      3 * (1-prevT) * Math.pow(prevT, 2) * control2Y + 
+                                      Math.pow(prevT, 3) * endY;
                         
                         const angle = Math.atan2(y - prevY, x - prevX) * (180 / Math.PI);
                         butterfly.style.transform = `rotate(${angle + 90}deg)`;
@@ -563,15 +598,18 @@
 
                     requestAnimationFrame(animateButterfly);
                 } else {
-                    // Animation complete - butterfly lands
+                    // Animation complete - butterfly lands at the right corner
                     butterfly.style.left = endX + 'px';
                     butterfly.style.top = endY + 'px';
-                    butterfly.style.transform = 'rotate(-20deg)';
+                    butterfly.style.transform = 'rotate(0deg)';
                     
                     // Stop flapping
-                    wingGroup.style.animation = 'none';
-                    wingGroup.style.transform = 'scaleX(0.4)';
-                    wingGroup.style.transition = 'transform 0.5s ease-out';
+                    wingLeft.style.animation = 'none';
+                    wingRight.style.animation = 'none';
+                    wingLeft.style.transform = 'rotateY(-45deg)';
+                    wingRight.style.transform = 'rotateY(45deg)';
+                    wingLeft.style.transition = 'transform 0.5s ease-out';
+                    wingRight.style.transition = 'transform 0.5s ease-out';
                 }
             }
 
@@ -602,151 +640,58 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // 4:3 Aspect Ratio
-            canvas.width = 800;
-            canvas.height = 600;
+            // 1. Load the "Blank" Background Image
+            const img = new Image();
+            // REPLACE this with the path to your blank image file
+            img.src = 'card_template.jpg'; 
+            // Note: If testing locally, use a local server or a Base64 string to avoid security errors.
 
-            // 1. Background
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            img.onload = function() {
+                // Set canvas to match the image's original high resolution
+                canvas.width = img.width;
+                canvas.height = img.height;
 
-            // 2. Text (Left Side)
-            ctx.textAlign = "left";
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "900 60px 'Segoe UI', Arial, sans-serif";
-            ctx.fillText("HAPPY", 50, 120);
-            
-            ctx.fillStyle = "#ff9ecd";
-            ctx.fillText("BIRTHDAY", 50, 190);
+                // Draw the background image
+                ctx.drawImage(img, 0, 0);
 
-            ctx.fillStyle = "#cccccc";
-            ctx.font = "italic 24px Arial";
-            ctx.fillText("Wishing you love, laughter,", 50, 260);
-            ctx.fillText("and a bright future.", 50, 295);
-
-            ctx.fillStyle = "#ff9ecd";
-            ctx.font = "bold 36px Arial";
-            ctx.fillText(username, 50, 360);
-
-            ctx.fillStyle = "#888888";
-            ctx.font = "italic 20px Arial";
-            ctx.fillText("~ By Ayush", 50, 550);
-
-            // 3. Draw 3D Cake (Right Side) - FIXED OUTLINE
-            const cx = 600;
-            const cy = 450;
-
-            ctx.strokeStyle = "#ffd700";
-            ctx.lineWidth = 4;
-            ctx.lineJoin = "round";
-
-            // Helper for 3D layers (only front visible)
-            function drawLayer(x, y, w, h) {
-                // FRONT FACE ONLY
-                ctx.beginPath();
+                // --- Configuration ---
+                const fontSize = 200; 
                 
-                // Top ellipse
-                ctx.ellipse(x, y - h, w/2, h/3, 0, 0, Math.PI*2);
-                ctx.stroke();
+                // 2. Position: Vertical Center & Margin from Left
+                const yPosition = canvas.height / 2 + 200; 
                 
-                // Left side (front)
-                ctx.beginPath();
-                ctx.moveTo(x - w/2, y - h);
-                ctx.lineTo(x - w/2, y);
-                ctx.stroke();
-                
-                // Right side (front)
-                ctx.beginPath();
-                ctx.moveTo(x + w/2, y - h);
-                ctx.lineTo(x + w/2, y);
-                ctx.stroke();
-                
-                // Bottom arc (front only - from -PI to 0)
-                ctx.beginPath();
-                ctx.ellipse(x, y, w/2, h/3, 0, 0, Math.PI);
-                ctx.stroke();
-                
-                // Add sprinkles
-                ctx.fillStyle = "#fff";
-                for(let i=0; i<5; i++) {
-                    ctx.beginPath();
-                    let dx = x - w/4 + Math.random()*w/2;
-                    let dy = y - h + 10 + Math.random()*(h-20);
-                    ctx.arc(dx, dy, 2, 0, Math.PI*2);
-                    ctx.fill();
-                }
-                
-                // Frosting on top
-                ctx.strokeStyle = "#ff9ecd";
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.ellipse(x, y - h, w/2, h/3, 0, 0, Math.PI*2);
-                ctx.stroke();
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "#ffd700";
-            }
+                // "towards the right with some margin from the left"
+                const xPosition = 180; 
 
-            // Draw Layers (Bottom to Top)
-            drawLayer(cx, cy, 220, 70);
-            drawLayer(cx, cy - 70, 160, 60);
-            drawLayer(cx, cy - 130, 100, 50);
+                // --- Text Styling (Matching the Neon Look) ---
+                ctx.textAlign = "left"; // Align text starting from the left margin
+                ctx.textBaseline = "middle"; // This ensures it sits exactly in the vertical center
+                ctx.font = `bold ${fontSize}px Arial, sans-serif`;
 
-            // Candle
-            ctx.strokeStyle = "#ffb3b3";
-            ctx.lineWidth = 3;
-            ctx.fillStyle = "#ffe0e0";
-            ctx.fillRect(cx - 6, cy - 180 - 40, 12, 40);
-            ctx.strokeRect(cx - 6, cy - 180 - 40, 12, 40);
-            
-            // Wick
-            ctx.strokeStyle = "#333";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy - 220);
-            ctx.lineTo(cx, cy - 226);
-            ctx.stroke();
-
-            // Flame
-            ctx.fillStyle = "#ffdd00";
-            ctx.beginPath();
-            ctx.ellipse(cx, cy - 235, 7, 13, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = "#fff";
-            ctx.beginPath();
-            ctx.ellipse(cx, cy - 232, 3, 6, 0, 0, Math.PI*2);
-            ctx.fill();
-
-            // 4. Draw Balloons near Cake
-            function drawBalloonCard(bx, by, color) {
-                ctx.fillStyle = color;
-                ctx.beginPath();
-                ctx.ellipse(bx, by, 20, 25, 0, 0, Math.PI*2);
-                ctx.fill();
+                // Add the Pink Neon Glow (to match the "Happy Birthday" style)
+                ctx.shadowColor = "#ff0066"; // Pink glow color
+                ctx.shadowBlur = 30;         // Glow strength
+                ctx.fillStyle = "#ff0066";   // Text Fill Color
                 
-                // Highlight
-                ctx.fillStyle = "rgba(255,255,255,0.4)";
-                ctx.beginPath();
-                ctx.ellipse(bx - 5, by - 8, 6, 8, 0, 0, Math.PI*2);
-                ctx.fill();
-                
-                // String
-                ctx.strokeStyle = "#888";
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(bx, by + 25);
-                ctx.quadraticCurveTo(bx - 5, by + 40, bx, by + 60);
-                ctx.stroke();
-            }
+                // Draw the text (Glow layer)
+                ctx.fillText(username, xPosition, yPosition);
 
-            drawBalloonCard(cx - 150, cy - 50, "#ff4d4d");
-            drawBalloonCard(cx + 150, cy - 100, "#4d4dff");
-            drawBalloonCard(cx - 180, cy - 120, "#ffd700");
+                // Optional: Add a White Outline for sharpness (Like the reference)
+                ctx.shadowBlur = 0; // Remove glow for the outline
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2;
+                ctx.strokeText(username, xPosition, yPosition);
 
-            // 5. Trigger Download
-            const link = document.createElement('a');
-            link.download = 'Birthday_Card_Ayush.png';
-            link.href = canvas.toDataURL("image/png");
-            link.click();
+                // --- Trigger Download ---
+                const link = document.createElement('a');
+                link.download = `Birthday_Card_${username}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            };
+
+            img.onerror = function() {
+                alert("Error: Could not load the image. Make sure the file path is correct.");
+            };
         }
     </script>
 </body>
