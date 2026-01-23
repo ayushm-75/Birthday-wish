@@ -26,12 +26,12 @@
             position: relative;
         }
 
-        /* --- Text Section --- */
         .text-container {
             z-index: 10;
             width: 100%;
             margin-top: 5vh;
             padding-left: 10px;
+            position: relative;
         }
 
         h1 {
@@ -41,9 +41,27 @@
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
+            position: relative;
         }
         
         h1 span { color: var(--highlight); }
+
+        .bird-gif {
+            position: absolute;
+            top: -20px;
+            right: -300px;
+            width: 300px;
+            height: 300px;
+            z-index: 15;
+            transform: translateX(-150px); /* moves left */
+            pointer-events: none;
+        }
+
+        .bird-gif img {
+            width: 350%;
+            height: 350%;
+            object-fit: contain;
+        }
 
         .wishes-text {
             margin-top: 20px;
@@ -64,7 +82,6 @@
         }
         .signature { margin-top: 20px; font-size: 0.9rem; color: #aaa; font-style: italic; }
 
-        /* --- Butterfly (Realistic) --- */
         .butterfly-wrapper {
             position: absolute;
             top: -50px;
@@ -101,7 +118,6 @@
             animation: flutter-right 0.15s infinite alternate ease-in-out;
         }
 
-        /* --- Cake Section --- */
         .cake-wrapper {
             position: relative;
             width: 300px; 
@@ -123,7 +139,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        /* 3D Cake CSS - More Realistic */
         .layer {
             position: absolute; 
             left: 50%; 
@@ -131,7 +146,6 @@
             border-radius: 10px;
         }
         
-        /* Cake Layer with 3D Effect */
         .cake-body {
             width: 100%;
             height: 100%;
@@ -154,7 +168,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Frosting drips */
         .frosting::after {
             content: '';
             position: absolute;
@@ -177,7 +190,6 @@
             border-radius: 0 0 50% 50%;
         }
 
-        /* Layer Sizes */
         .l-bottom { 
             width: 220px; 
             height: 80px; 
@@ -199,7 +211,6 @@
             z-index: 3; 
         }
 
-        /* Add some decorative elements on layers */
         .decoration {
             position: absolute;
             top: 50%;
@@ -214,7 +225,6 @@
         .dec2 { left: 50%; transform: translateY(-50%); }
         .dec3 { left: 80%; transform: translateY(-50%); }
 
-        /* Candle */
         .candle {
             position: absolute; 
             width: 12px; 
@@ -230,7 +240,6 @@
                 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* Wick */
         .candle::before {
             content:''; 
             position: absolute; 
@@ -292,7 +301,6 @@
             text-shadow: 0 0 10px rgba(255, 179, 217, 0.5);
         }
 
-        /* --- Balloons & Confetti --- */
         .balloon {
             position: absolute; 
             bottom: -150px; 
@@ -323,7 +331,6 @@
             z-index: 60; 
         }
 
-        /* Animations */
         @keyframes flutter-left { 
             0% { transform: rotateY(0deg); } 
             100% { transform: rotateY(-70deg); } 
@@ -335,34 +342,33 @@
         }
         
         @keyframes flicker { 
-            from { 
-                opacity: 1; 
-                transform: translateX(-50%) scale(1); 
-            } 
-            to { 
-                opacity: 0.85; 
-                transform: translateX(-50%) scale(0.95, 1.1); 
-            } 
+            from { opacity: 1; transform: translateX(-50%) scale(1); } 
+            to { opacity: 0.85; transform: translateX(-50%) scale(0.95, 1.1); } 
         }
         
-        @keyframes pulse { 
-            0%,100%{opacity:0.6;} 
-            50%{opacity:1;} 
-        }
-        
-        @keyframes beat { 
-            0%,100%{transform:scale(1);} 
-            50%{transform:scale(1.2);} 
-        }
-        
-        @keyframes floatUp { 
-            to { transform: translateY(-120vh) rotate(20deg); } 
-        }
-        
-        @keyframes fallConfetti { 
-            to { transform: translateY(100vh) rotate(720deg); } 
+        @keyframes pulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+        @keyframes beat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(20deg); } }
+        @keyframes fallConfetti { to { transform: translateY(100vh) rotate(720deg); } }
+
+        /* Responsive adjustments for bird positioning */
+        @media (max-width: 768px) {
+            .bird-gif {
+                width: 80px;
+                height: 80px;
+                right: -50px;
+                top: -10px;
+            }
         }
 
+        @media (max-width: 480px) {
+            .bird-gif {
+                width: 60px;
+                height: 60px;
+                right: -30px;
+                top: -5px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -371,7 +377,6 @@
         <source src="song.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Realistic Butterfly (SVG) -->
     <div class="butterfly-wrapper" id="butterfly">
         <svg class="butterfly-svg" viewBox="0 0 100 100">
             <defs>
@@ -380,11 +385,9 @@
                     <stop offset="100%" style="stop-color:#ff4500;stop-opacity:1" />
                 </radialGradient>
             </defs>
-            <!-- Wings -->
             <g class="wing-group">
                 <path class="wing wing-left" d="M 50 50 Q 20 10 10 40 T 50 80 Z" />
                 <path class="wing wing-right" d="M 50 50 Q 80 10 90 40 T 50 80 Z" />
-                <!-- Body -->
                 <ellipse cx="50" cy="50" rx="3" ry="25" fill="#222" />
                 <path d="M 50 25 L 40 10 M 50 25 L 60 10" stroke="#222" stroke-width="2" fill="none"/>
             </g>
@@ -392,25 +395,28 @@
     </div>
 
     <div class="text-container">
-        <h1>Happy <br><span>Birthday</span></h1>
+        <h1>Happy <br><span>Birthday</span>
+            <div class="bird-gif">
+                <img src="bird.gif" alt="Flying Bird">
+            </div>
+        </h1>
         
         <div class="wishes-text">
             To <span class="highlight-text" id="username"></span>,<br><br>
-            Happy 17th! May your day be filled with magic, laughter, and everything sweet. Here's to a future as bright as the candles on your cake.<br><br>
-            Make a wish and let it fly! <span class="heart">❤️</span>
+            Happy 17th Birthday! <br>May your day be filled with magic, laughter, and everything sweet.<br><br>
+            Wishing you a year full of laughter, growth, confidence, and a heart full of joy 💖<br>Have a wonderful 17th birthday. <span class="heart">❤️</span>
         </div>
 
         <div class="btn-container">
             <button class="download-btn" onclick="downloadCard()">Download Card</button>
         </div>
         
-        <div class="signature">~ By Ayush</div>
+        <div class="signature">~ By Ayush Mallick</div>
     </div>
 
     <div class="cake-wrapper" id="cakeArea">
         <div class="plate"></div>
 
-        <!-- Layers with realistic styling -->
         <div class="layer l-bottom" id="bottomLayer">
             <div class="cake-body">
                 <div class="frosting"></div>
@@ -435,7 +441,6 @@
             </div>
         </div>
 
-        <!-- Candle -->
         <div class="candle"></div>
         <div class="flame" id="flame" onclick="blowCandle()"></div>
         <div class="smoke" id="smoke"></div>
@@ -444,40 +449,26 @@
     </div>
 
     <script>
-
         let animationEndCount = 0;
-        const totalAnimations = 110; // 30 balloons + 80 confetti = 110 total
-        let butterflyHasFlown = false; // Track if butterfly has already flown
+        const totalAnimations = 110;
+        let butterflyHasFlown = false;
 
         const params = new URLSearchParams(window.location.search);
-
-        // Global variable
         let username = params.get("name") || "Guest";
-
-        // Optional: sanitize (recommended)
         username = username.replace(/[^a-zA-Z0-9 _-]/g, "");
 
-        // Use in HTML
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("username").textContent = username;
-
-            // Use in CSS via CSS variable
-            document.documentElement.style.setProperty(
-            "--username-length",
-            username.length
-            );
+            document.documentElement.style.setProperty("--username-length", username.length);
         });
 
         window.onload = function() {
-            // Start audio immediately
             const audio = document.getElementById('bdayAudio');
             audio.play().catch(() => {
-                // If autoplay is blocked, try again on first user interaction
                 document.body.addEventListener('click', () => {
                     audio.play().catch(()=>{});
                 }, {once: true});
             });
-
             startParty();
         };
 
@@ -491,8 +482,7 @@
             for(let i=0; i<num; i++) {
                 let b = document.createElement('div');
                 b.className = 'balloon';
-                let c = colors[Math.floor(Math.random()*colors.length)];
-                b.style.backgroundColor = c;
+                b.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
                 b.style.left = Math.random() * 95 + '%';
                 let dur = 4 + Math.random() * 4;
                 b.style.animation = `floatUp ${dur}s linear forwards`;
@@ -524,7 +514,6 @@
         function checkAllAnimationsComplete() {
             animationEndCount++;
             if (animationEndCount >= totalAnimations && !butterflyHasFlown) {
-                // All balloons and confetti are done, start butterfly
                 butterflyHasFlown = true;
                 setTimeout(flyButterfly, 500);
             }
@@ -533,197 +522,305 @@
         function flyButterfly() {
             const butterfly = document.getElementById('butterfly');
             const bottomLayer = document.getElementById('bottomLayer');
+            const cakeArea = document.getElementById('cakeArea');
             const wingLeft = document.querySelector('.wing-left');
             const wingRight = document.querySelector('.wing-right');
 
-            // Get the actual position of the bottom layer
-            const rect = bottomLayer.getBoundingClientRect();
-            
-            // Target: Exact right edge corner of the bottom layer
-            const endX = rect.right - 25; // Right at the corner
-            const endY = rect.top - 10; // Just above the top edge
+            const layerRect = bottomLayer.getBoundingClientRect();
+            const cakeRect = cakeArea.getBoundingClientRect();
 
-            // Starting position (top-left corner)
-            const startX = 30;
-            const startY = 30;
+            // --------- Key positions ---------
+            // Start (off-screen top-left)
+            const startX = -40;
+            const startY = 20;
 
-            // Create a curved spiral path following the red heart drawing
-            // The path goes: start top-left -> curve down-left -> swing right and down -> curve up to top-right corner
-            const control1X = window.innerWidth * 0.05;  // First curve - down-left
-            const control1Y = window.innerHeight * 0.45;
-            
-            const control2X = window.innerWidth * 0.25;  // Bottom of curve
-            const control2Y = window.innerHeight * 0.75;
-            
-            const control3X = rect.right - 100;          // Swing up to cake
-            const control3Y = window.innerHeight * 0.65;
+            // End: top-right corner of bottom cake layer
+            const endX = layerRect.right - 25;
+            const endY = layerRect.top - 5;
 
-            // Set butterfly to start position
-            butterfly.style.left = startX + 'px';
-            butterfly.style.top = startY + 'px';
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
 
-            // Animate position
-            let startTime = null;
-            const duration = 5000; // 5 seconds for smoother animation
+            // Loop 1: roughly above center text
+            const loop1CX = screenW * 0.52;
+            const loop1CY = screenH * 0.20;
+            const loop1R  = Math.min(screenW * 0.14, 80);
 
-            function animateButterfly(timestamp) {
-                if (!startTime) startTime = timestamp;
-                const progress = (timestamp - startTime) / duration;
+            // Loop 2: around cake
+            const loop2CX = cakeRect.left + cakeRect.width / 2;
+            const loop2CY = cakeRect.top + cakeRect.height * 0.35;
+            const loop2R  = Math.min(screenW * 0.22, 120);
 
-                if (progress < 1) {
-                    const t = progress;
-                    
-                    // Using a custom curved path with multiple control points
-                    // Split the animation into two curves for the heart shape
-                    let x, y;
-                    
-                    if (t < 0.5) {
-                        // First half: curve down and left
-                        const t1 = t * 2; // normalize to 0-1
-                        x = Math.pow(1-t1, 2) * startX + 
-                            2 * (1-t1) * t1 * control1X + 
-                            Math.pow(t1, 2) * control2X;
-                        y = Math.pow(1-t1, 2) * startY + 
-                            2 * (1-t1) * t1 * control1Y + 
-                            Math.pow(t1, 2) * control2Y;
-                    } else {
-                        // Second half: curve up and right to the cake
-                        const t2 = (t - 0.5) * 2; // normalize to 0-1
-                        x = Math.pow(1-t2, 2) * control2X + 
-                            2 * (1-t2) * t2 * control3X + 
-                            Math.pow(t2, 2) * endX;
-                        y = Math.pow(1-t2, 2) * control2Y + 
-                            2 * (1-t2) * t2 * control3Y + 
-                            Math.pow(t2, 2) * endY;
-                    }
+            const pathPoints = [];
 
-                    butterfly.style.left = x + 'px';
-                    butterfly.style.top = y + 'px';
+            // ---------- utilities ----------
+            function addPoint(x, y) {
+                pathPoints.push({ x, y });
+            }
 
-                    // Calculate angle for smooth rotation based on direction of movement
-                    if (progress > 0.005) {
-                        const prevT = progress - 0.005;
-                        let prevX, prevY;
-                        
-                        if (prevT < 0.5) {
-                            const pt1 = prevT * 2;
-                            prevX = Math.pow(1-pt1, 2) * startX + 
-                                    2 * (1-pt1) * pt1 * control1X + 
-                                    Math.pow(pt1, 2) * control2X;
-                            prevY = Math.pow(1-pt1, 2) * startY + 
-                                    2 * (1-pt1) * pt1 * control1Y + 
-                                    Math.pow(pt1, 2) * control2Y;
-                        } else {
-                            const pt2 = (prevT - 0.5) * 2;
-                            prevX = Math.pow(1-pt2, 2) * control2X + 
-                                    2 * (1-pt2) * pt2 * control3X + 
-                                    Math.pow(pt2, 2) * endX;
-                            prevY = Math.pow(1-pt2, 2) * control2Y + 
-                                    2 * (1-pt2) * pt2 * control3Y + 
-                                    Math.pow(pt2, 2) * endY;
-                        }
-                        
-                        const angle = Math.atan2(y - prevY, x - prevX) * (180 / Math.PI);
-                        butterfly.style.transform = `rotate(${angle + 90}deg)`;
-                    }
-
-                    requestAnimationFrame(animateButterfly);
-                } else {
-                    // Animation complete - butterfly lands at the exact right corner
-                    butterfly.style.left = endX + 'px';
-                    butterfly.style.top = endY + 'px';
-                    butterfly.style.transform = 'rotate(10deg)'; // Slight angle when resting
-                    
-                    // Stop flapping - wings fold
-                    wingLeft.style.animation = 'none';
-                    wingRight.style.animation = 'none';
-                    wingLeft.style.transform = 'rotateY(-50deg)';
-                    wingRight.style.transform = 'rotateY(50deg)';
-                    wingLeft.style.transition = 'transform 0.6s ease-out';
-                    wingRight.style.transition = 'transform 0.6s ease-out';
+            function addArc(cx, cy, r, a0, a1, steps) {
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    const a = a0 + (a1 - a0) * t;
+                    addPoint(cx + r * Math.cos(a), cy + r * Math.sin(a));
                 }
             }
 
+            // Smooth S-curve with cubic Bézier sampled
+            function addBezier(p0, p1, p2, p3, steps) {
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    const mt = 1 - t;
+                    const x =
+                        mt * mt * mt * p0.x +
+                        3 * mt * mt * t * p1.x +
+                        3 * mt * t * t * p2.x +
+                        t * t * t * p3.x;
+                    const y =
+                        mt * mt * mt * p0.y +
+                        3 * mt * mt * t * p1.y +
+                        3 * mt * t * t * p2.y +
+                        t * t * t * p3.y;
+                    addPoint(x, y);
+                }
+            }
+
+            // ==========================================================
+            // RED: entry curve (top-left → right side of loop1)
+            //      down-right, center of curvature ABOVE path
+            // ==========================================================
+            const redEndX = loop1CX + loop1R * 0.2; // meet loop1 near bottom-right
+            const redEndY = loop1CY + loop1R * 0.9;
+
+            const redCX = (startX + redEndX) / 2;
+            const redCY = Math.min(startY, loop1CY) - 150; // center above ⇒ arc bows down
+            const redR  = Math.hypot(startX - redCX, startY - redCY);
+
+            let redA0 = Math.atan2(startY - redCY, startX - redCX);
+            let redA1 = Math.atan2(redEndY - redCY, redEndX - redCX);
+            if (redA1 > redA0) redA1 -= 2 * Math.PI;
+
+            addArc(redCX, redCY, redR, redA0, redA1, 40);
+
+            // small adjust into exact bottom joint of loop1
+            const joint1X = loop1CX;
+            const joint1Y = loop1CY + loop1R; // bottom of loop1
+
+            const adj1Start = pathPoints[pathPoints.length - 1];
+            const adj1CX = joint1X - 60;
+            const adj1CY = joint1Y - 80; // above to keep curvature center above
+            const adj1R  = Math.hypot(adj1Start.x - adj1CX, adj1Start.y - adj1CY);
+            let adj1A0 = Math.atan2(adj1Start.y - adj1CY, adj1Start.x - adj1CX);
+            let adj1A1 = Math.atan2(joint1Y - adj1CY, joint1X - adj1CX);
+            if (adj1A1 > adj1A0) adj1A1 -= 2 * Math.PI;
+            addArc(adj1CX, adj1CY, adj1R, adj1A0, adj1A1, 18);
+
+            // ==========================================================
+            // PURPLE: loop 1 – anticlockwise, starting at bottom going right→up→left→down
+            // bottom point = angle +π/2, anticlockwise means angle decreases
+            // ==========================================================
+            const loop1StartAngle = Math.PI / 2;
+            const loop1EndAngle   = loop1StartAngle - 2 * Math.PI; // one full turn
+            addArc(loop1CX, loop1CY, loop1R, loop1StartAngle, loop1EndAngle, 64);
+
+            // ==========================================================
+            // GREEN: S-curve from bottom of loop1 down-right toward loop2
+            //        overall convex down (center above in local sense)
+            // ==========================================================
+            const greenStart = { x: joint1X, y: joint1Y };      // bottom of loop1
+            const greenEnd   = {
+                x: loop2CX - loop2R * 0.1,
+                y: loop2CY - loop2R * 0.9
+            }; // slightly above-left of top of loop2
+
+            // Two control points to create an "S" shape down-right
+            const greenCP1 = {
+                x: greenStart.x + loop1R * 0.8,
+                y: greenStart.y + loop1R * 0.4
+            };
+            const greenCP2 = {
+                x: greenEnd.x - loop2R * 0.6,
+                y: greenEnd.y + loop2R * 0.9
+            };
+
+            addBezier(greenStart, greenCP1, greenCP2, greenEnd, 48);
+
+            // Adjust arc into top of loop2, so we enter smoothly
+            const joint2X = loop2CX;
+            const joint2Y = loop2CY - loop2R; // top of loop2
+
+            const adj2Start = pathPoints[pathPoints.length - 1];
+            const adj2CX = joint2X + 60;
+            const adj2CY = joint2Y - 80; // above
+            const adj2R  = Math.hypot(adj2Start.x - adj2CX, adj2Start.y - adj2CY);
+            let adj2A0 = Math.atan2(adj2Start.y - adj2CY, adj2Start.x - adj2CX);
+            let adj2A1 = Math.atan2(joint2Y - adj2CY, joint2X - adj2CX);
+            if (adj2A1 > adj2A0) adj2A1 -= 2 * Math.PI;
+            addArc(adj2CX, adj2CY, adj2R, adj2A0, adj2A1, 18);
+
+            // ==========================================================
+            // BLACK: Loop 2 anticlockwise, then curved exit to cake corner
+            // Loop: start at top (angle -π/2) anticlockwise
+            // ==========================================================
+            const loop2StartAngle = -Math.PI / 2;
+            const loop2EndAngle   = loop2StartAngle - 2 * Math.PI;
+            addArc(loop2CX, loop2CY, loop2R, loop2StartAngle, loop2EndAngle, 72);
+
+            // Exit from bottom of loop2 (same as drawing)
+            const bottom2X = loop2CX;
+            const bottom2Y = loop2CY + loop2R;
+
+            // curved path from bottom of loop2 up-right to cake corner,
+            // center of curvature above the path
+            const exitCX = (bottom2X + endX) / 2;
+            const exitCY = Math.min(bottom2Y, endY) - 180; // above
+            const exitR  = Math.hypot(bottom2X - exitCX, bottom2Y - exitCY);
+
+            let exitA0 = Math.atan2(bottom2Y - exitCY, bottom2X - exitCX);
+            let exitA1 = Math.atan2(endY - exitCY, endX - exitCX);
+            if (exitA1 > exitA0) exitA1 -= 2 * Math.PI;
+
+            addArc(exitCX, exitCY, exitR, exitA0, exitA1, 48);
+
+            // Ensure exact landing point
+            addPoint(endX, endY);
+
+            // ==========================================================
+            // CONSTANT SPEED: precompute cumulative arc-length table
+            // ==========================================================
+            const segments = [];
+            let totalLen = 0;
+            for (let i = 1; i < pathPoints.length; i++) {
+                const p0 = pathPoints[i - 1];
+                const p1 = pathPoints[i];
+                const dx = p1.x - p0.x;
+                const dy = p1.y - p0.y;
+                const d  = Math.hypot(dx, dy);
+                totalLen += d;
+                segments.push({ len: totalLen, p0, p1 });
+            }
+
+            function getPosByDistance(s) {
+                if (s <= 0) return pathPoints[0];
+                if (s >= totalLen) return pathPoints[pathPoints.length - 1];
+
+                // binary search
+                let lo = 0, hi = segments.length - 1;
+                while (lo < hi) {
+                    const mid = (lo + hi) >> 1;
+                    if (segments[mid].len < s) lo = mid + 1;
+                    else hi = mid;
+                }
+                const seg = segments[lo];
+                const prevLen = lo === 0 ? 0 : segments[lo - 1].len;
+                const t = (s - prevLen) / (seg.len - prevLen || 1);
+                return {
+                    x: seg.p0.x + (seg.p1.x - seg.p0.x) * t,
+                    y: seg.p0.y + (seg.p1.y - seg.p0.y) * t
+                };
+            }
+
+            // ==========================================================
+            // Animation
+            // ==========================================================
+            const duration = 11000; // ms
+            const speed = totalLen / duration; // px per ms
+
+            let startTime = null;
+            let prevPos = { x: startX, y: startY };
+
+            butterfly.style.left = startX + 'px';
+            butterfly.style.top = startY + 'px';
+            butterfly.style.opacity = '1';
+
+            function animateButterfly(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const s = Math.min(elapsed * speed, totalLen); // traveled distance
+
+                const pos = getPosByDistance(s);
+                butterfly.style.left = pos.x + 'px';
+                butterfly.style.top = pos.y + 'px';
+
+                // orientation
+                const dx = pos.x - prevPos.x;
+                const dy = pos.y - prevPos.y;
+                if (Math.abs(dx) > 0.3 || Math.abs(dy) > 0.3) {
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    butterfly.style.transform = `rotate(${angle + 90}deg)`;
+                    prevPos = pos;
+                }
+
+                if (s < totalLen) {
+                    requestAnimationFrame(animateButterfly);
+                } else {
+                    butterfly.style.left = endX + 'px';
+                    butterfly.style.top = endY + 'px';
+                    butterfly.style.transform = 'rotate(-15deg)';
+
+                    wingLeft.style.animation = 'none';
+                    wingRight.style.animation = 'none';
+                    wingLeft.style.transform = 'rotateY(-40deg)';
+                    wingRight.style.transform = 'rotateY(40deg)';
+                    wingLeft.style.transition = '0.8s ease-out';
+                    wingRight.style.transition = 'transform 0.8s ease-out';
+                }
+            }
             requestAnimationFrame(animateButterfly);
-        }
+    }
 
-        function blowCandle() {
-            const flame = document.getElementById('flame');
-            const smoke = document.getElementById('smoke');
-            const instruct = document.getElementById('instruct');
+    function blowCandle() {
+        const flame = document.getElementById('flame');
+        const smoke = document.getElementById('smoke');
+        const instruct = document.getElementById('instruct');
 
-            flame.style.opacity = '0';
-            flame.style.animation = 'none';
+        flame.style.opacity = '0';
+        flame.style.animation = 'none';
 
-            smoke.style.opacity = '1';
-            smoke.style.bottom = '300px'; 
-            smoke.style.transition = 'opacity 1s, bottom 2s';
-            
-            instruct.innerHTML = "🎉 Happy Birthday! May all your wishes come true! 🎉";
-            instruct.style.color = "#ffd700";
-            instruct.style.fontSize = "1rem";
+        smoke.style.opacity = '1';
+        smoke.style.bottom = '300px'; 
+        smoke.style.transition = 'opacity 1s, bottom 2s';
+        
+        instruct.innerHTML = "Wishing you a year full of laughter, growth, confidence, and a heart full of joy 💖 Have a wonderful 17th birthday. May all your wishes come true! 🎉";
+        instruct.style.color = "#ffd700";
+        instruct.style.fontSize = "1rem";
 
-            spawnConfetti(50);
-            setTimeout(() => { smoke.style.opacity = '0'; }, 2000);
-        }
+        spawnConfetti(50);
+        setTimeout(() => { smoke.style.opacity = '0'; }, 2000);
+    }
 
-        function downloadCard() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // 1. Load the "Blank" Background Image
-            const img = new Image();
-            // REPLACE this with the path to your blank image file
-            img.src = 'card_template.jpg'; 
-            // Note: If testing locally, use a local server or a Base64 string to avoid security errors.
+    function downloadCard() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const img = new Image();
+        img.src = 'card_template.jpg'; 
 
-            img.onload = function() {
-                // Set canvas to match the image's original high resolution
-                canvas.width = img.width;
-                canvas.height = img.height;
+        img.onload = function() {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
 
-                // Draw the background image
-                ctx.drawImage(img, 0, 0);
+            const fontSize = 200; 
+            const yPosition = canvas.height / 2 + 240; 
+            const xPosition = 180; 
 
-                // --- Configuration ---
-                const fontSize = 200; 
-                
-                // 2. Position: Vertical Center & Margin from Left
-                const yPosition = canvas.height / 2 + 200; 
-                
-                // "towards the right with some margin from the left"
-                const xPosition = 180; 
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+            ctx.shadowColor = "transparent";
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = "#fffacd";
+            ctx.fillText(username, xPosition, yPosition);
 
-                // --- Text Styling (Matching the Neon Look) ---
-                ctx.textAlign = "left"; // Align text starting from the left margin
-                ctx.textBaseline = "middle"; // This ensures it sits exactly in the vertical center
-                ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+            const link = document.createElement('a');
+            link.download = `Birthday_Card_${username}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        };
 
-                // Add the Pink Neon Glow (to match the "Happy Birthday" style)
-                ctx.shadowColor = "#ff0066"; // Pink glow color
-                ctx.shadowBlur = 30;         // Glow strength
-                ctx.fillStyle = "#ff0066";   // Text Fill Color
-                
-                // Draw the text (Glow layer)
-                ctx.fillText(username, xPosition, yPosition);
-
-                // Optional: Add a White Outline for sharpness (Like the reference)
-                ctx.shadowBlur = 0; // Remove glow for the outline
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 2;
-                ctx.strokeText(username, xPosition, yPosition);
-
-                // --- Trigger Download ---
-                const link = document.createElement('a');
-                link.download = `Birthday_Card_${username}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            };
-
-            img.onerror = function() {
-                alert("Error: Could not load the image. Make sure the file path is correct.");
-            };
-        }
-    </script>
-</body>
-</html>
+        img.onerror = function() {
+            alert("Error: Could not load the image. Make sure the file path is correct.");
+        };
+    }
+</script>
